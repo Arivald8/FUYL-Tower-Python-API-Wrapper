@@ -9,6 +9,7 @@ class Handler(BaseHTTPRequestHandler):
             ]
         }
 
+
     
     def handle_get_jwt(self, request):
         print("handle_get_jwt")
@@ -132,11 +133,27 @@ class Handler(BaseHTTPRequestHandler):
         return expected_response_data if request == expected_request_data else failed_response_data
 
 
-    def handle_get_door_status(self, request):
-        
-        
+    def handle_get_door_status_specific_door(self):
+        print("handle_get_door_status_specific_door")
+        auth = "Bearer eyJ0eXAiOiJKV1QiLCJ..."
+        if self.headers.get('Authorization') == auth:
+            if self.path == "/status/door/2":
+                return {
+                    "locker_id": "2",
+                    "code_digit1": "-1",
+                    "code_digit2": "-1",
+                    "code_digit3": "-1",
+                    "code_digit4": "-1",
+                    "retry_attempts": "4",
+                    "locked": "1",
+                    "quarantined": "0",
+                    "inspect_opened": "0",
+                    "alarm": "0"
+                }
 
 
+    
+    
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
         parsed = self.parse(self.rfile.read(self.length))
@@ -156,7 +173,10 @@ class Handler(BaseHTTPRequestHandler):
     
     def do_PUT(self):
         self.length = int(self.headers.get('Content-Length'))
-        parsed = self.parse(self.rfile.read(self.length))
+        try:
+            parsed = self.parse(self.rfile.read(self.length))
+        except IndexError:
+            parsed = None
 
         print("PATH")
         print(self.path)
@@ -167,6 +187,9 @@ class Handler(BaseHTTPRequestHandler):
 
         elif self.path == "/door/1":
             response = json.dumps(self.handle_set_door_pin(request=parsed))
+
+        elif self.path == "/status/door/2":
+            response = json.dumps(self.handle_get_door_status_specific_door())
 
         self.send_response(200)
         self.send_header('Content-type', 'text/html')

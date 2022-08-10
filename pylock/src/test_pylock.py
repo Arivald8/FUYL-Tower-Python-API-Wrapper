@@ -11,7 +11,8 @@ class TestPylockCfg(unittest.TestCase):
             client_secret="test_secret",
             username = "test_username",
             password = "test_password",
-            grant_type = "password"
+            grant_type = "password",
+            access_token = "eyJ0eXAiOiJKV1QiLCJ..."
         )
         return super().setUp()
 
@@ -49,44 +50,55 @@ class TestPylockCfg(unittest.TestCase):
     def test_door_access(self):
         self.assertDictEqual(
             self.base_wrapper.door_access(["0", "0", "0", "0"], 0, 0),
-                {
-                    "Locker_id": "0",
-                    "code_digit1": "0",
-                    "code_digit2": "0",
-                    "code_digit3": "0",
-                    "code_digit4": "0",
-                    "open_status": "0",
-                    "retry_atempts": "0",
-                    "locked": "0",
-                    "quarantined": "0",
-                    "Inspect_opened": "0",
-                    "alarm": "0"
-                }
+            {
+                "Locker_id": "0",
+                "code_digit1": "0",
+                "code_digit2": "0",
+                "code_digit3": "0",
+                "code_digit4": "0",
+                "open_status": "0",
+                "retry_atempts": "0",
+                "locked": "0",
+                "quarantined": "0",
+                "Inspect_opened": "0",
+                "alarm": "0"
+            }
         )
 
 
     def test_set_door_pin(self):
         self.assertDictEqual(
             self.base_wrapper.set_door_pin(1, ["0", "0", "0", "0"]),
-                {
-                    "Locker_id": "0",
-                    "code_digit1": "0",
-                    "code_digit2": "0",
-                    "code_digit3": "0",
-                    "code_digit4": "0",
-                    "open_status": "0",
-                    "retry_atempts": "0",
-                    "locked": "0",
-                    "quarantined": "0",
-                    "Inspect_opened": "0",
-                    "alarm": "0"
-                }
-            )
+            {
+                "Locker_id": "0",
+                "code_digit1": "0",
+                "code_digit2": "0",
+                "code_digit3": "0",
+                "code_digit4": "0",
+                "open_status": "0",
+                "retry_atempts": "0",
+                "locked": "0",
+                "quarantined": "0",
+                "Inspect_opened": "0",
+                "alarm": "0"
+            }
+        )
 
     
     def test_get_door_status_specific_door(self):
         self.assertDictEqual(
             self.base_wrapper.get_door_status("door", 2),
-            
+            {
+                "locker_id": "2",
+                "code_digit1": "-1",
+                "code_digit2": "-1",
+                "code_digit3": "-1",
+                "code_digit4": "-1",
+                "retry_attempts": "4",
+                "locked": "1",
+                "quarantined": "0",
+                "inspect_opened": "0",
+                "alarm": "0"
+            }
         )
 
