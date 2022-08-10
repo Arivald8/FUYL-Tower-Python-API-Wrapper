@@ -1,6 +1,5 @@
 from pylock import __version__
 import unittest
-import requests
 from pylock.base_wrapper import BaseWrapper
 
 class TestPylockCfg(unittest.TestCase):
@@ -100,5 +99,37 @@ class TestPylockCfg(unittest.TestCase):
                 "inspect_opened": "0",
                 "alarm": "0"
             }
+        )
+
+    
+    def test_get_door_status_full_tower(self):
+        self.assertListEqual(
+            self.base_wrapper.get_door_status("tower", ""),
+            [
+                {
+                    "locker_id": "3",
+                    "code_digit1": "-1",
+                    "code_digit2": "-1",
+                    "code_digit3": "-1",
+                    "code_digit4": "-1",
+                    "retry_attempts": "4",
+                    "locked": "1",
+                    "quarantined": "0",
+                    "inspect_opened": "0",
+                    "alarm": "0"
+                },
+                {
+                    "locker_id": "4",
+                    "code_digit1": "-1",
+                    "code_digit2": "-1",
+                    "code_digit3": "-1",
+                    "code_digit4": "-1",
+                    "retry_attempts": "4",
+                    "locked": "1",
+                    "quarantined": "0",
+                    "inspect_opened": "0",
+                    "alarm": "0"
+                }
+            ]
         )
 

@@ -9,13 +9,8 @@ class Handler(BaseHTTPRequestHandler):
             ]
         }
 
-
     
     def handle_get_jwt(self, request):
-        print("handle_get_jwt")
-        print(request)
-        print("______________________")
-
         expected_request_data = {
             "grant_type": "password",
             "client_id": "test_id",
@@ -23,7 +18,6 @@ class Handler(BaseHTTPRequestHandler):
             "username": "test_username",
             "password": "test_password"
         }
-        print(expected_request_data)
 
         expected_response_data = {
             "access_token": "eyJ0eXAiOiJKV1QiLCJ...",
@@ -43,10 +37,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
     def handle_door_access(self, request):
-        print("handle_door_access")
-        print(request)
-        print("______________________")
-
         expected_request_data = {
             "code_digit1": "0",
             "code_digit2": "0",
@@ -54,8 +44,6 @@ class Handler(BaseHTTPRequestHandler):
             "code_digit4": "0",
             "locked": "0"
         }
-
-        print(expected_request_data)
 
         expected_response_data = {
             "Locker_id": "0",
@@ -89,18 +77,12 @@ class Handler(BaseHTTPRequestHandler):
 
 
     def handle_set_door_pin(self, request):
-        print("handle_set_door_pin")
-        print(request)
-        print("______________________")
-
         expected_request_data = {
             "code_digit1": "0",
             "code_digit2": "0",
             "code_digit3": "0",
             "code_digit4": "0",
         }
-
-        print(expected_request_data)
 
         expected_response_data = {
             "Locker_id": "0",
@@ -134,7 +116,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
     def handle_get_door_status_specific_door(self):
-        print("handle_get_door_status_specific_door")
         auth = "Bearer eyJ0eXAiOiJKV1QiLCJ..."
         if self.headers.get('Authorization') == auth:
             if self.path == "/status/door/2":
@@ -151,16 +132,42 @@ class Handler(BaseHTTPRequestHandler):
                     "alarm": "0"
                 }
 
-
     
+    def handle_get_door_status_full_tower(self):
+        auth = "Bearer eyJ0eXAiOiJKV1QiLCJ..."
+        if self.headers.get('Authorization') == auth:
+            if self.path == "/status/tower/":
+                return [
+                    {
+                        "locker_id": "3",
+                        "code_digit1": "-1",
+                        "code_digit2": "-1",
+                        "code_digit3": "-1",
+                        "code_digit4": "-1",
+                        "retry_attempts": "4",
+                        "locked": "1",
+                        "quarantined": "0",
+                        "inspect_opened": "0",
+                        "alarm": "0"
+                    },
+                    {
+                        "locker_id": "4",
+                        "code_digit1": "-1",
+                        "code_digit2": "-1",
+                        "code_digit3": "-1",
+                        "code_digit4": "-1",
+                        "retry_attempts": "4",
+                        "locked": "1",
+                        "quarantined": "0",
+                        "inspect_opened": "0",
+                        "alarm": "0"
+                    }
+            ]
+
     
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
         parsed = self.parse(self.rfile.read(self.length))
-
-        print("PATH")
-        print(self.path)
-        print("_____________")
 
         if self.path == "/token":
             response = json.dumps(self.handle_get_jwt(request=parsed))
@@ -177,10 +184,6 @@ class Handler(BaseHTTPRequestHandler):
             parsed = self.parse(self.rfile.read(self.length))
         except IndexError:
             parsed = None
-
-        print("PATH")
-        print(self.path)
-        print("_____________")
         
         if self.path == "/door/0":
             response = json.dumps(self.handle_door_access(request=parsed))
@@ -191,10 +194,17 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/status/door/2":
             response = json.dumps(self.handle_get_door_status_specific_door())
 
+        elif self.path == "/status/tower/":
+            response = json.dumps(self.handle_get_door_status_full_tower())
+
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
-        self.wfile.write(response.encode(encoding='utf_8'))
+        try:
+            self.wfile.write(response.encode(encoding='utf_8'))
+        except UnboundLocalError as no_response:
+            response = {"err": no_response}
+            self.wfile.write(response.encode(encoding="utf_8"))
 
 
 def run(server_class=HTTPServer, handler_class=Handler):

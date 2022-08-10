@@ -104,7 +104,6 @@ class BaseWrapper:
 
     def get_door_status(
         self, status_type: str, door_number: int) -> requests.Response.json:
-        
         """
         status_type can be either "door" or "tower"
         
