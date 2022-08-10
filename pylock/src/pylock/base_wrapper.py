@@ -40,9 +40,8 @@ class BaseWrapper:
         """
 
         jwt = requests.post(
-            f"{self.url}",
-            data = 
-            {
+            f"{self.url}/token",
+            data = {
                 "grant_type": self.grant_type,
                 "client_id": self.client_id,
                 "client_secret": self.client_secret,
@@ -50,7 +49,7 @@ class BaseWrapper:
                 "password": self.password
             },
             headers={'Accept-Encoding': None}
-        )
+        ).json()
         return jwt['access_token'] if only_access_token else jwt
 
 
@@ -62,7 +61,7 @@ class BaseWrapper:
 
 
     def door_access(self, pin: list, door_number: int, lock_status: int
-    ) -> requests.Response.json:
+    ) -> requests.Response:
         """
         Locks or unlocks the door specified.
 
@@ -107,6 +106,8 @@ class BaseWrapper:
         self, status_type: str, door_number: int) -> requests.Response.json:
         
         """
+        status_type can be either "door" or "tower"
+        
         Example response after door status
 
         {
