@@ -135,7 +135,7 @@ class TestPylockCfg(unittest.TestCase):
 
 
     def test_display_message_top_line_startup(self):
-        self.assertDictEqual(
+        self.assertEqual(
             self.base_wrapper.display_message(0, "startup", "message"),
             {"id":1,"key":"live_message_line0","value":"Live Message Line 1"}
         )
