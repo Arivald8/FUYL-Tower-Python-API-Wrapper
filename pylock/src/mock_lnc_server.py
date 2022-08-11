@@ -3,11 +3,14 @@ import json
 
 class Handler(BaseHTTPRequestHandler):
     def parse(self, byte_string):
-        return {
-            data[0]: data[1] for data in [
-                str_bytes.split("=") for str_bytes in byte_string.decode("utf-8").split("&")
-            ]
-        }
+        try:
+            return {
+                data[0]: data[1] for data in [
+                    str_bytes.split("=") for str_bytes in byte_string.decode("utf-8").split("&")
+                ]
+            }
+        except IndexError:
+            return byte_string
 
     
     def handle_get_jwt(self, request):
@@ -165,6 +168,20 @@ class Handler(BaseHTTPRequestHandler):
             ]
 
     
+    def handle_display_message(self, request):
+        expected_request_data = b'message'
+        expected_response_data = {
+            "id": 1,
+            "key": "live_message_line0",
+            "value":"Live Message Line 1"
+        }
+        return expected_response_data if request == expected_request_data else {
+            "id": "denied",
+            "key": "denied",
+            "value": "denied"
+        }
+
+    
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
         parsed = self.parse(self.rfile.read(self.length))
@@ -182,8 +199,12 @@ class Handler(BaseHTTPRequestHandler):
         self.length = int(self.headers.get('Content-Length'))
         try:
             parsed = self.parse(self.rfile.read(self.length))
+
         except IndexError:
-            parsed = None
+            if self.length == 7:
+                parsed = str(self.rfile.read(self.length))
+            else:
+                parsed = None
         
         if self.path == "/door/0":
             response = json.dumps(self.handle_door_access(request=parsed))
@@ -196,6 +217,9 @@ class Handler(BaseHTTPRequestHandler):
 
         elif self.path == "/status/tower/":
             response = json.dumps(self.handle_get_door_status_full_tower())
+
+        elif self.path == "/message/startup/line/0":
+            response = json.dumps(self.handle_display_message(request=parsed))
 
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
