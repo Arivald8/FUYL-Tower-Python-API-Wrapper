@@ -30,7 +30,7 @@ class Pylock(BaseWrapper):
             randomized_pins = {
                 _: [f"{randint(0, 9)}" for _ in range(4)] for _ in range(16)
             }
-            for locker, pin in randomized_pins.values():
+            for locker, pin in randomized_pins.items():
                 self.set_door_pin(locker, pin)
             return randomized_pins
         else:

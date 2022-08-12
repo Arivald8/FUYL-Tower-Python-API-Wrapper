@@ -40,14 +40,6 @@ class Handler(BaseHTTPRequestHandler):
 
 
     def handle_door_access(self, request):
-        expected_request_data = {
-            "code_digit1": "0",
-            "code_digit2": "0",
-            "code_digit3": "0",
-            "code_digit4": "0",
-            "locked": "0"
-        }
-
         expected_response_data = {
             "Locker_id": "0",
             "code_digit1": "0",
@@ -75,6 +67,29 @@ class Handler(BaseHTTPRequestHandler):
             "Inspect_opened": "denied",
             "alarm": "denied"
         }
+
+        try:
+            pin_request = request['locked']
+        except KeyError:
+            # if keyerror, it means that the request is to change pin
+            # not to open or close a locker
+            expected_request_data = {
+                "code_digit1": request["code_digit1"],
+                "code_digit2": request["code_digit2"],
+                "code_digit3": request["code_digit3"],
+                "code_digit4": request["code_digit4"]
+            }
+
+            return expected_response_data if request == expected_request_data else failed_response_data
+
+        expected_request_data = {
+            "code_digit1": "0",
+            "code_digit2": "0",
+            "code_digit3": "0",
+            "code_digit4": "0",
+            "locked": "0"
+        }
+
 
         return expected_response_data if request == expected_request_data else failed_response_data
 
@@ -181,6 +196,19 @@ class Handler(BaseHTTPRequestHandler):
             "value": "denied"
         }
 
+
+    def handle_read_keypad_default_buffer(self, request):
+        expected_response_data = {
+            "id": 1,
+            "parameter": "api_keypad_entry",
+            "entry": "| 0 1 2 3 4 5 6 7 8 9 C E"
+        }
+        return expected_response_data if request == b'' else {
+            "id": "denied",
+            "parameter": "denied",
+            "entry": "denied"
+        }
+
     
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
@@ -201,15 +229,60 @@ class Handler(BaseHTTPRequestHandler):
             parsed = self.parse(self.rfile.read(self.length))
 
         except IndexError:
+            # 7 -> str(message)
             if self.length == 7:
                 parsed = str(self.rfile.read(self.length))
             else:
                 parsed = None
         
         if self.path == "/door/0":
-            response = json.dumps(self.handle_door_access(request=parsed))
+            response = json.dumps(self.handle_door_access(parsed))
 
         elif self.path == "/door/1":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/2":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/3":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/4":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/5":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/6":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/7":
+            response = json.dumps(self.handle_door_access(parsed))
+        elif self.path == "/door/8":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/9":
+            response = json.dumps(self.handle_door_access(parsed))
+            
+        elif self.path == "/door/10":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/11":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/12":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/13":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/14":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/15":
+            response = json.dumps(self.handle_door_access(parsed))
+
+        elif self.path == "/door/-1":
             response = json.dumps(self.handle_set_door_pin(request=parsed))
 
         elif self.path == "/status/door/2":
@@ -221,14 +294,33 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/message/startup/line/0":
             response = json.dumps(self.handle_display_message(request=parsed))
 
+        elif self.path == "/message/startup/line/1":
+            response = json.dumps(self.handle_display_message(request=parsed))
+
+        elif self.path == "/message/live/line/0":
+            response = json.dumps(self.handle_display_message(request=parsed))
+
+        elif self.path == "/message/live/line/1":
+            response = json.dumps(self.handle_display_message(request=parsed))
+
+        elif self.path == "/keypad/view":
+            response = json.dumps(self.handle_read_keypad_default_buffer(request=parsed))
+
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
         self.end_headers()
+
+        if 'response' not in locals():
+            response = "Err"
         try:
             self.wfile.write(response.encode(encoding='utf_8'))
-        except UnboundLocalError as no_response:
+        except Exception as no_response:
             response = {"err": no_response}
-            self.wfile.write(response.encode(encoding="utf_8"))
+            try:
+                self.wfile.write(response.encode(encoding="utf_8"))
+            except AttributeError:
+                self.wfile.write(response)
+
 
 
 def run(server_class=HTTPServer, handler_class=Handler):

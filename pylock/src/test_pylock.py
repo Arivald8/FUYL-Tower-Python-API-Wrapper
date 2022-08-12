@@ -1,6 +1,8 @@
+from curses.ascii import isdigit
 from pylock import __version__
 import unittest
 from pylock.base_wrapper import BaseWrapper
+from pylock.pylocker import Pylock
 
 class TestPylockCfg(unittest.TestCase):
     def setUp(self) -> None:
@@ -13,6 +15,16 @@ class TestPylockCfg(unittest.TestCase):
             grant_type = "password",
             access_token = "eyJ0eXAiOiJKV1QiLCJ..."
         )
+
+        self.convenience_wrapper = Pylock()
+        self.convenience_wrapper.url="http://127.0.0.1:8000"
+        self.convenience_wrapper.client_id="test_id"
+        self.convenience_wrapper.client_secret="test_secret"
+        self.convenience_wrapper.username = "test_username"
+        self.convenience_wrapper.password = "test_password"
+        self.convenience_wrapper.grant_type = "password"
+        self.convenience_wrapper.access_token = "eyJ0eXAiOiJKV1QiLCJ..."
+
         return super().setUp()
 
     def test_pylock_version(self):
@@ -48,7 +60,7 @@ class TestPylockCfg(unittest.TestCase):
 
     def test_door_access(self):
         self.assertDictEqual(
-            self.base_wrapper.door_access(["0", "0", "0", "0"], 0, 0),
+            self.base_wrapper.door_access(pin=["0", "0", "0", "0"], door_number=0, lock_status=0),
             {
                 "Locker_id": "0",
                 "code_digit1": "0",
@@ -67,7 +79,7 @@ class TestPylockCfg(unittest.TestCase):
 
     def test_set_door_pin(self):
         self.assertDictEqual(
-            self.base_wrapper.set_door_pin(1, ["0", "0", "0", "0"]),
+            self.base_wrapper.set_door_pin(-1, ["0", "0", "0", "0"]),
             {
                 "Locker_id": "0",
                 "code_digit1": "0",
@@ -139,4 +151,52 @@ class TestPylockCfg(unittest.TestCase):
             self.base_wrapper.display_message(0, "startup", "message"),
             {"id":1,"key":"live_message_line0","value":"Live Message Line 1"}
         )
+
+
+    def test_display_message_bottom_line_startup(self):
+        self.assertEqual(
+            self.base_wrapper.display_message(1, "startup", "message"),
+            {"id":1,"key":"live_message_line0","value":"Live Message Line 1"}
+        )
+
+
+    def test_display_message_top_line_live(self):
+        self.assertEqual(
+            self.base_wrapper.display_message(0, "live", "message"),
+            {"id":1,"key":"live_message_line0","value":"Live Message Line 1"}
+        )
+
+    
+    def test_display_message_bottom_line_live(self):
+        self.assertEqual(
+            self.base_wrapper.display_message(1, "live", "message"),
+            {"id":1,"key":"live_message_line0","value":"Live Message Line 1"}
+        )
+
+
+    def test_read_keypad_default_buffer(self):
+        self.assertDictEqual(
+            self.base_wrapper.read_keypad(action_type="view", entry=""),
+            {
+                "id": 1,
+                "parameter": "api_keypad_entry",
+                "entry": "| 0 1 2 3 4 5 6 7 8 9 C E"
+            }
+        )
+
+    
+    def test_conv_wrapper_random_pins_one_locker(self):
+        pin = self.convenience_wrapper.random_pins(False)
+
+        self.assertEqual(len(pin), 4)
+
+        for digit in pin:
+            self.assertTrue(isdigit(digit))
+
+
+    def test_conv_wrapper_random_pins_all_lockers(self):
+        pins = self.convenience_wrapper.random_pins(True)
+        
+
+    
 

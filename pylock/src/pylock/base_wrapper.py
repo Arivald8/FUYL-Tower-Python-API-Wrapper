@@ -85,11 +85,9 @@ class BaseWrapper:
     
     def set_door_pin(
         self, door_number: int, pin: list) -> requests.Response.json:
-
         """
         pin parameter expects to receive an argument of -> ["0", "1", "2", "3"]
         """
-
         return requests.put(
             url = f"{self.url}/door/{door_number}",
             headers = self.auth_header(self.access_token),
