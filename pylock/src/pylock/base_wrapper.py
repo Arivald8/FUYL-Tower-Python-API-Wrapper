@@ -127,6 +127,10 @@ class BaseWrapper:
         ]
 
         """
+        print("DEBUG")
+        print(status_type)
+        print(door_number)
+        print("ENDBUG")
         return requests.put(
             url = f"{self.url}/status/{status_type}/{door_number}",
             headers = self.auth_header(self.access_token)

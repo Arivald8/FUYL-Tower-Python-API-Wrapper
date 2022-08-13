@@ -1,8 +1,11 @@
 from curses.ascii import isdigit
+from random import random
+from re import L
 from pylock import __version__
 import unittest
 from pylock.base_wrapper import BaseWrapper
 from pylock.pylocker import Pylock
+from random import randint
 
 class TestPylockCfg(unittest.TestCase):
     def setUp(self) -> None:
@@ -98,7 +101,7 @@ class TestPylockCfg(unittest.TestCase):
     
     def test_get_door_status_specific_door(self):
         self.assertDictEqual(
-            self.base_wrapper.get_door_status("door", 2),
+            self.base_wrapper.get_door_status("door", -1),
             {
                 "locker_id": "2",
                 "code_digit1": "-1",
@@ -196,7 +199,30 @@ class TestPylockCfg(unittest.TestCase):
 
     def test_conv_wrapper_random_pins_all_lockers(self):
         pins = self.convenience_wrapper.random_pins(True)
-        
+        dummy_pins = {locker: ["0", "0", "0", "0"] for locker in pins.keys()}
+
+        self.assertEqual(len(pins), len(dummy_pins))
 
     
+    def test_conv_wrapper_random_pins_single_locker(self):
+        pin = self.convenience_wrapper.random_pins(False)
+        dummy_pin = ["0", "0", "0", "0"]
+
+        self.assertEqual(len(pin), len(dummy_pin))
+        
+        for _ in pin:
+            self.assertEqual(
+                type(_), str
+            )
+
+
+    def test_conv_wrapper_default_pins(self):
+        self.assertTrue(
+            self.convenience_wrapper.default_pins(["0", "0", "0", "0"])
+        )
+        
+
+    def test_conv_wrapper_all_door_access(self):
+        self.assertTrue(self.convenience_wrapper.all_door_access(True))
+        
 

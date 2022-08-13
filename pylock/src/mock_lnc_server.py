@@ -209,6 +209,63 @@ class Handler(BaseHTTPRequestHandler):
             "entry": "denied"
         }
 
+
+    def handle_conv_wrapper_random_pins(self, request):
+        expected_request_data = {
+            "code_digit1": request['code_digit1'],
+            "code_digit2": request['code_digit2'],
+            "code_digit3": request['code_digit3'],
+            "code_digit4": request['code_digit4'],
+        }
+
+        expected_response_data = {
+                "Locker_id": "0",
+                "code_digit1": "0",
+                "code_digit2": "0",
+                "code_digit3": "0",
+                "code_digit4": "0",
+                "open_status": "0",
+                "retry_atempts": "0",
+                "locked": "0",
+                "quarantined": "0",
+                "Inspect_opened": "0",
+                "alarm": "0"
+            }
+
+        failed_response_data = {
+            "Locker_id": "denied",
+            "code_digit1": "denied",
+            "code_digit2": "denied",
+            "code_digit3": "denied",
+            "code_digit4": "denied",
+            "open_status": "denied",
+            "retry_atempts": "denied",
+            "locked": "denied",
+            "quarantined": "denied",
+            "Inspect_opened": "denied",
+            "alarm": "denied"
+        }
+
+        return expected_response_data if expected_request_data == request else failed_response_data
+        
+
+    def handle_all_door_access(self, request):
+        expected_response_data = {
+                "Locker_id": "0",
+                "code_digit1": "0",
+                "code_digit2": "0",
+                "code_digit3": "0",
+                "code_digit4": "0",
+                "open_status": "0",
+                "retry_atempts": "0",
+                "locked": "0",
+                "quarantined": "0",
+                "Inspect_opened": "0",
+                "alarm": "0"
+            }
+
+        return expected_response_data
+    
     
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
@@ -258,6 +315,7 @@ class Handler(BaseHTTPRequestHandler):
 
         elif self.path == "/door/7":
             response = json.dumps(self.handle_door_access(parsed))
+            
         elif self.path == "/door/8":
             response = json.dumps(self.handle_door_access(parsed))
 
@@ -285,7 +343,7 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/door/-1":
             response = json.dumps(self.handle_set_door_pin(request=parsed))
 
-        elif self.path == "/status/door/2":
+        elif self.path == "/status/door/-1":
             response = json.dumps(self.handle_get_door_status_specific_door())
 
         elif self.path == "/status/tower/":
@@ -305,6 +363,54 @@ class Handler(BaseHTTPRequestHandler):
 
         elif self.path == "/keypad/view":
             response = json.dumps(self.handle_read_keypad_default_buffer(request=parsed))
+
+        elif self.path == "/status/door/0":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/1":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/2":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/3":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/4":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/5":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/6":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/6":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/7":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/8":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+
+        elif self.path == "/status/door/9":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+        elif self.path == "/status/door/10":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+        elif self.path == "/status/door/11":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+        elif self.path == "/status/door/12":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/13":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/door/14":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+
 
         self.send_response(200)
         self.send_header('Content-type', 'text/html')

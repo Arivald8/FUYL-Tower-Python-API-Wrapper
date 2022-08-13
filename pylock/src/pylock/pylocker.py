@@ -8,6 +8,7 @@ from pylock.base_wrapper import BaseWrapper
 from random import randint
 
 
+
 class Pylock(BaseWrapper):    
     def __init__(self, tower_id=None, tower_location=None):
         """
@@ -56,7 +57,7 @@ class Pylock(BaseWrapper):
         locked: bool if True, all doors will be locked. If False, all doors will be unlocked. 
         """
         pins_dict = {}
-        for locker in range(15):
+        for locker in range(16):
             for key, value in self.get_door_status("door", locker):
                 if key == "locker_id":
                     pins_dict[key] = value
