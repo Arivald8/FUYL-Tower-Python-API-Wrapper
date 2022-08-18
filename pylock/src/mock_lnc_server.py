@@ -1,7 +1,15 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
 
+
 class Handler(BaseHTTPRequestHandler):
+
+    def url_path_validation(self, parsed_request):
+        door_paths = ["/door/" + str(door) for door in range(16)]
+
+        if self.path in door_paths:
+            return json.dumps(self.handle_door_access(parsed_request))
+
     def parse(self, byte_string):
         try:
             return {
@@ -136,7 +144,7 @@ class Handler(BaseHTTPRequestHandler):
     def handle_get_door_status_specific_door(self):
         auth = "Bearer eyJ0eXAiOiJKV1QiLCJ..."
         if self.headers.get('Authorization') == auth:
-            if self.path == "/status/door/2":
+            if self.path == "/status/door/-1":
                 return {
                     "locker_id": "2",
                     "code_digit1": "-1",
@@ -266,7 +274,13 @@ class Handler(BaseHTTPRequestHandler):
 
         return expected_response_data
     
-    
+    def handle_all_door_access_tower(self, request):
+        return [
+            {"locker_id":0,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+
+            {"locker_id":1,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+        ]
+
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))
         parsed = self.parse(self.rfile.read(self.length))
@@ -346,9 +360,6 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/status/door/-1":
             response = json.dumps(self.handle_get_door_status_specific_door())
 
-        elif self.path == "/status/tower/":
-            response = json.dumps(self.handle_get_door_status_full_tower())
-
         elif self.path == "/message/startup/line/0":
             response = json.dumps(self.handle_display_message(request=parsed))
 
@@ -394,13 +405,15 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/status/door/8":
             response = json.dumps(self.handle_all_door_access(request=parsed))
 
-
         elif self.path == "/status/door/9":
             response = json.dumps(self.handle_all_door_access(request=parsed))
+
         elif self.path == "/status/door/10":
             response = json.dumps(self.handle_all_door_access(request=parsed))
+
         elif self.path == "/status/door/11":
             response = json.dumps(self.handle_all_door_access(request=parsed))
+
         elif self.path == "/status/door/12":
             response = json.dumps(self.handle_all_door_access(request=parsed))
 
@@ -410,6 +423,11 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/status/door/14":
             response = json.dumps(self.handle_all_door_access(request=parsed))
 
+        elif self.path == "/status/door/15":
+            response = json.dumps(self.handle_all_door_access(request=parsed))
+
+        elif self.path == "/status/tower/":
+            response = json.dumps(self.handle_all_door_access_tower(request=parsed))
 
 
         self.send_response(200)
@@ -417,7 +435,13 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
 
         if 'response' not in locals():
-            response = "Err"
+            response = json.dumps(
+                [
+                    {"locker_id":0,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+
+                    {"locker_id":1,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+                ]
+            )
         try:
             self.wfile.write(response.encode(encoding='utf_8'))
         except Exception as no_response:
@@ -428,14 +452,20 @@ class Handler(BaseHTTPRequestHandler):
                 self.wfile.write(response)
 
 
-
 def run(server_class=HTTPServer, handler_class=Handler):
     server_address = ('', 8000)
     httpd = server_class(server_address, handler_class)
-    print("Starting server")
+    print("Server starting.")
     print("Server listening...")
+    print("You can now start the tests.")
     httpd.serve_forever()
 
 
 if __name__ == "__main__":
     run()
+
+
+"""
+elif self.path == "/status/tower/":
+    response = json.dumps(self.handle_get_door_status_full_tower())
+"""

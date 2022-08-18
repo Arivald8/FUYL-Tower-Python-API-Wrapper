@@ -11,6 +11,7 @@ class BaseWrapper:
         password: str = CFG["PASSWORD"], 
         grant_type: str = CFG["GRANT_TYPE"],
         access_token: str = CFG["ACCESS_TOKEN"]
+
     ):
         self.url = url
         self.client_id = client_id
@@ -127,14 +128,12 @@ class BaseWrapper:
         ]
 
         """
-        print("DEBUG")
-        print(status_type)
-        print(door_number)
-        print("ENDBUG")
+
         return requests.put(
             url = f"{self.url}/status/{status_type}/{door_number}",
             headers = self.auth_header(self.access_token)
         ).json()
+
 
 
     def display_message(

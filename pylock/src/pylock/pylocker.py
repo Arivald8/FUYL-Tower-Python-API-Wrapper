@@ -58,12 +58,14 @@ class Pylock(BaseWrapper):
         """
         pins_dict = {}
         for locker in range(16):
-            for key, value in self.get_door_status("door", locker):
-                if key == "locker_id":
-                    pins_dict[key] = value
-                for digit in range(1,5):
-                    if key == f"code_digits{digit}":
+            for data in self.get_door_status("tower", locker):
+                for key, value in data.items():
+                    print(f"key {key} value {value}")
+                    if key == "locker_id":
                         pins_dict[key] = value
+                    for digit in range(1,5):
+                        if key == f"code_digits{digit}":
+                            pins_dict[key] = value
 
             self.door_access(
                 pin=pins_dict[locker],
