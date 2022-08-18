@@ -1,14 +1,56 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
+from multiprocessing import parent_process
 
 
 class Handler(BaseHTTPRequestHandler):
 
     def url_path_validation(self, parsed_request):
         door_paths = ["/door/" + str(door) for door in range(16)]
+        special_door_path = ["/door/-1"]
+
+        status_door_paths = ["/status/door/" + str(door) for door in range(16)]
+        special_status_door_path = ["/status/door/-1"]
+
+        message_paths = [
+            "/message/startup/line/0",
+            "/message/startup/line/1",
+            "/message/live/line/0",
+            "/message/live/line/1"
+        ]
+
+        keypad_buffer_path = ["/keypad/view"]
+
+        tower_path = ["/status/tower/"]
+        
 
         if self.path in door_paths:
             return json.dumps(self.handle_door_access(parsed_request))
+
+        if self.path in status_door_paths:
+            return json.dumps(self.handle_all_door_access(parsed_request))
+
+        if self.path in special_door_path:
+            return json.dumps(self.handle_set_door_pin(parsed_request))
+
+        if self.path in special_status_door_path:
+            return json.dumps(
+                self.handle_get_door_status_specific_door(parsed_request)
+            )
+
+        if self.path in message_paths:
+            return json.dumps(self.handle_display_message(parsed_request))
+
+        if self.path in keypad_buffer_path:
+            return json.dumps(
+                self.handle_read_keypad_default_buffer(parsed_request)
+            )
+
+        if self.path in tower_path:
+            return json.dumps(
+                self.handle_all_door_access_tower(parsed_request)
+            )
+
 
     def parse(self, byte_string):
         try:
@@ -305,130 +347,8 @@ class Handler(BaseHTTPRequestHandler):
                 parsed = str(self.rfile.read(self.length))
             else:
                 parsed = None
-        
-        if self.path == "/door/0":
-            response = json.dumps(self.handle_door_access(parsed))
 
-        elif self.path == "/door/1":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/2":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/3":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/4":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/5":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/6":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/7":
-            response = json.dumps(self.handle_door_access(parsed))
-            
-        elif self.path == "/door/8":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/9":
-            response = json.dumps(self.handle_door_access(parsed))
-            
-        elif self.path == "/door/10":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/11":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/12":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/13":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/14":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/15":
-            response = json.dumps(self.handle_door_access(parsed))
-
-        elif self.path == "/door/-1":
-            response = json.dumps(self.handle_set_door_pin(request=parsed))
-
-        elif self.path == "/status/door/-1":
-            response = json.dumps(self.handle_get_door_status_specific_door())
-
-        elif self.path == "/message/startup/line/0":
-            response = json.dumps(self.handle_display_message(request=parsed))
-
-        elif self.path == "/message/startup/line/1":
-            response = json.dumps(self.handle_display_message(request=parsed))
-
-        elif self.path == "/message/live/line/0":
-            response = json.dumps(self.handle_display_message(request=parsed))
-
-        elif self.path == "/message/live/line/1":
-            response = json.dumps(self.handle_display_message(request=parsed))
-
-        elif self.path == "/keypad/view":
-            response = json.dumps(self.handle_read_keypad_default_buffer(request=parsed))
-
-        elif self.path == "/status/door/0":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/1":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/2":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/3":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/4":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/5":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/6":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/6":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/7":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/8":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/9":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/10":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/11":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/12":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/13":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/14":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/door/15":
-            response = json.dumps(self.handle_all_door_access(request=parsed))
-
-        elif self.path == "/status/tower/":
-            response = json.dumps(self.handle_all_door_access_tower(request=parsed))
-
+        response = self.url_path_validation(parsed)
 
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
