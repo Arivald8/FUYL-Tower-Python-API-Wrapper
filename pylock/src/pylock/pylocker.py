@@ -1,7 +1,9 @@
 """
 Pylock.py defines an additional class which inherits from BaseWrapper.
 
-Here you can find all additional methods that are not directly built-into the official API specification. The methods cover common usage tasks such as randomizing pins for all lockers, setting a default pin for all lockers,
+Here you can find all additional methods that are not directly built-into the
+official API specification. The methods cover common usage tasks such as randomizing
+pins for all lockers, setting a default pin for all lockers,
 locking or unlocking all lockers etc. 
 """
 from pylock.base_wrapper import BaseWrapper
@@ -12,7 +14,9 @@ from random import randint
 class Pylock(BaseWrapper):    
     def __init__(self, tower_id=None, tower_location=None):
         """
-        If management of multiple towers is required, please specify the tower_id and tower_location to distingush between towers. Remember to provide the IP address of each tower to each instance separately.  
+        If management of multiple towers is required, 
+        please specify the tower_id and tower_location to distingush between towers.
+        Remember to provide the IP address of each tower to each instance separately.  
         """
 
         self.tower_id = tower_id
@@ -23,9 +27,13 @@ class Pylock(BaseWrapper):
         """
         Generates a pseudo-random 4 digit pin, that is then stored as a list of strings. 
 
-        If all_lockers is set to True, the method will randomize pins for all lockers and will return a dictionary containing the new pins. This action sets a new pin for each locker.
+        If all_lockers is set to True, the method will randomize pins for all
+        lockers and will return a dictionary containing the new pins. 
+        This action sets a new pin for each locker.
 
-        If all_lockers is set to False or None, the methods returns a single list of strings representing the new pin. This action does not override any pins.  
+        If all_lockers is set to False or None, the methods returns a single 
+        list of strings representing the new pin. This action does not override
+        any pins.  
         """
         if all_lockers:
             randomized_pins = {
@@ -50,7 +58,8 @@ class Pylock(BaseWrapper):
 
     def all_door_access(self, locked: bool) -> bool:
         """
-        First, the method retrieves all current pins by parsing the return value of BaseWrapper.get_door_status.
+        First, the method retrieves all current pins by parsing the return value of
+        BaseWrapper.get_door_status.
 
         Second, the method calls BaseWrapper.door_access to unlock all lockers.
 

@@ -56,7 +56,8 @@ class BaseWrapper:
 
     def auth_header(self, jwt_access_token: str) -> dict:
         """
-        Returns a dictionary containing the correct Authorization header. This header must be present in all calls, except when fetching a JWT token.
+        Returns a dictionary containing the correct Authorization header. 
+        This header must be present in all calls, except when fetching a JWT token.
         """
         return {"Authorization": f"Bearer {jwt_access_token}"}
 
@@ -124,7 +125,21 @@ class BaseWrapper:
         Example response after tower status
 
         [
-            {"locker_id":0,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0} ...
+            {
+                "locker_id":0,
+                "code_digit1": 1,
+                "code_digit2": 1,
+                "code_digit3": 1,
+                "code_digit4": 1,
+                "retry_attempts":3,
+                "locked":1,
+                "quarantined":0,
+                "inspect_opened":0,
+                "alarm":0
+            },
+            {
+                ...
+            }
         ]
 
         """
@@ -155,25 +170,39 @@ class BaseWrapper:
     def read_keypad(self, action_type: str, entry: str) -> requests.Response.json:
 
         """
-        Either updates or views the current keypad buffer. The keypad buffer will store all the keys pressed on the physical keypad until cleared.
+        Either updates or views the current keypad buffer. 
+        The keypad buffer will store all the keys pressed on the physical keypad until cleared.
 
         entry	
-                    This will be used as the value of the keypad buffer. This parameter is only required when updating the buffer.
+                    This will be used as the value of the keypad buffer. 
+                    This parameter is only required when updating the buffer.
 
         action_type 	
-                    This can be either update or view. Update will set everything in the keypad buffer to be equal to the parameter sent. View will return everything stored in the buffer.
+                    This can be either update or view. 
+                    Update will set everything 
+                    in the keypad buffer to be 
+                    equal to the parameter sent. 
+                    View will return everything stored in the buffer.
 
-        Keys are saved as integer values which represent keypad digits or control keys and separated with a space delimiter:
+        Keys are saved as integer values which represent keypad digits or control
+        keys and separated with a space delimiter:
 
-            Digits:				        0..9 
-            CANCEL control key:         C
-            OK (Enter) control key:	    E
+            Digits: 0..9 
+            CANCEL control key: C
+            OK (Enter) control key: E
 
-        For example, entering the keypad sequence: 1234567890[CANCEL][OK] would result in a response string of “1 2 3 4 5 6 7 8 9 0 C E”
+        For example, entering the keypad sequence: 
+        1234567890[CANCEL][OK] 
+        would result in a response string of 
+        “1 2 3 4 5 6 7 8 9 0 C E”
 
         Example of a response after keypad view command;
 
-        {"id":1,"parameter":"api_keypad_entry","entry":"| 0 1 2 3 4 5 6 7 8 9 C E"}
+        {
+            "id":1,
+            "parameter":"api_keypad_entry",
+            "entry":"| 0 1 2 3 4 5 6 7 8 9 C E"
+        }
         """
 
         return requests.put(
@@ -181,4 +210,3 @@ class BaseWrapper:
             headers = self.auth_header(self.access_token),
             data = entry
         ).json()
-        
