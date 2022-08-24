@@ -1,11 +1,9 @@
 from curses.ascii import isdigit
-from random import random
-from re import L
 from pylock import __version__
 import unittest
 from pylock.base_wrapper import BaseWrapper
 from pylock.pylocker import Pylock
-from random import randint
+
 
 class TestPylockCfg(unittest.TestCase):
     def setUp(self) -> None:
@@ -121,9 +119,31 @@ class TestPylockCfg(unittest.TestCase):
         self.assertListEqual(
             self.base_wrapper.get_door_status("tower", ""),
             [
-                {"locker_id":0,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+                {
+                    "locker_id":0,
+                    "code_digit1": 1,
+                    "code_digit2": 1,
+                    "code_digit3": 1,
+                    "code_digit4": 1,
+                    "retry_attempts":3,
+                    "locked":1,
+                    "quarantined":0,
+                    "inspect_opened":0,
+                    "alarm":0
+                },
 
-                {"locker_id":1,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
+                {
+                    "locker_id":1,
+                    "code_digit1": 1,
+                    "code_digit2": 1,
+                    "code_digit3": 1,
+                    "code_digit4": 1,
+                    "retry_attempts":3,
+                    "locked":1,
+                    "quarantined":0,
+                    "inspect_opened":0,
+                    "alarm":0
+                },
             ]
         )
 

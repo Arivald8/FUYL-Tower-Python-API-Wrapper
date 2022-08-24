@@ -1,6 +1,5 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import json
-from multiprocessing import parent_process
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -377,15 +376,8 @@ def run(server_class=HTTPServer, handler_class=Handler):
     httpd = server_class(server_address, handler_class)
     print("Server starting.")
     print("Server listening...")
-    print("You can now start the tests.")
     httpd.serve_forever()
 
 
 if __name__ == "__main__":
     run()
-
-
-"""
-elif self.path == "/status/tower/":
-    response = json.dumps(self.handle_get_door_status_full_tower())
-"""
