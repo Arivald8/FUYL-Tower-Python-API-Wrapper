@@ -28,6 +28,7 @@ class TestPylockCfg(unittest.TestCase):
 
         return super().setUp()
 
+
     def test_pylock_version(self):
         self.assertEqual(__version__, "0.1.0")
 
@@ -219,5 +220,3 @@ class TestPylockCfg(unittest.TestCase):
         self.assertTrue(
             self.convenience_wrapper.default_pins(["0", "0", "0", "0"])
         )
-        
-

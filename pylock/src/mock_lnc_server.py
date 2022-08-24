@@ -3,7 +3,6 @@ import json
 
 
 class Handler(BaseHTTPRequestHandler):
-
     def url_path_validation(self, parsed_request):
         door_paths = ["/door/" + str(door) for door in range(16)]
         special_door_path = ["/door/-1"]
@@ -321,6 +320,7 @@ class Handler(BaseHTTPRequestHandler):
 
             {"locker_id":1,"code_digit1": 1,"code_digit2": 1,"code_digit3": 1,"code_digit4": 1,"retry_attempts":3,"locked":1,"quarantined":0,"inspect_opened":0,"alarm":0},
         ]
+
 
     def do_POST(self):
         self.length = int(self.headers.get('Content-Length'))

@@ -135,7 +135,6 @@ class BaseWrapper:
         ).json()
 
 
-
     def display_message(
         self, line: int, 
         startup_or_live: str, message: str) -> requests.Response.json:
@@ -182,3 +181,4 @@ class BaseWrapper:
             headers = self.auth_header(self.access_token),
             data = entry
         ).json()
+        

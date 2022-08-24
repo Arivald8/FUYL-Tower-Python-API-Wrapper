@@ -73,5 +73,3 @@ class Pylock(BaseWrapper):
                 lock_status=locked
             )
         return True if pins_dict else False
-
-
