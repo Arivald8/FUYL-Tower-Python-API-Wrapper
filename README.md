@@ -30,7 +30,7 @@ Further information regarding the FUYL Tower is available online at:
 
 **PC LOCS AND LOCKNCHARGE IS NOT RESPONSIBLE FOR THE PYLOCK WRAPPER. THE WRAPPER HAS BEEN DEVELOPED AS AN OPEN SOURCE SOLUTION FOR PYTHON ORIENTED DEVELOPMENT PROJECTS.**
 
-**THE DEVELOPER OF THE WRAPPER IS IN NOT AFFILIATED WITH THE ABOVE MENTIONED IN ANY CAPACITY.**
+**THE DEVELOPER OF THE WRAPPER IS NOT AFFILIATED WITH THE ABOVE MENTIONED IN ANY CAPACITY.**
 
 ***
 
@@ -71,6 +71,8 @@ Unless otherwise specified, `GRANT_TYPE` should be set to "password".
 
 `ACCESS_TOKEN` must be a string of the access_token only, 
 not the full JWT containing expiry and a refresh_token.
+
+If you would like to store the actual account pasword in the CFG file, make sure not to define it in clear text, but rather load from an environment variable.
 
 You can also specify each constant directly on an instance of Pylock:
 
@@ -157,7 +159,7 @@ Return type specified as JSON == `requests.Response.json`
 
 ### `get_jwt(only_access_token: bool) -> JSON`
 
-Returns a JWT token for API authentication. 
+Fetches a JWT token for API authentication. 
 
 Each API call must include a JWT authentication token. 
 
@@ -224,7 +226,7 @@ Example response:
     "alarm": 0
 }
 ```
-If a Door is jammed closed but commanded to open, an attempt will be
+If a door is jammed closed but commanded to open, an attempt will be
 made to release the lock at increasing time intervals (to limit lock
 heating and damage) until a time limit (of approx. 40 seconds) expires,
 at which point the alarm condition will be asserted and no further
@@ -344,8 +346,7 @@ Example response:
 ```
 {
     "id":1,
-    "key":"
-    live_message_line0",
+    "key":"live_message_line0",
     "value":"Live Message Line 1"
 }
 ```
@@ -371,9 +372,14 @@ Notes:
 
 Keys are saved as integer values which represent keypad digits or control keys and separated with a space delimiter:
 
-    Digits:				        0..9 
-    CANCEL control key:         C
-    OK (Enter) control key:	    E
+    Digits:
+        0..9 
+
+    CANCEL control key:
+        C
+
+    OK (Enter) control key:
+        E
 
 
 For example, entering the keypad sequence: `1234567890[CANCEL][OK]` would result in a response string of `“1 2 3 4 5 6 7 8 9 0 C E”`
@@ -391,7 +397,7 @@ Example of a response after keypad view command;
 #
 
 ### **`class Pylock(BaseWrapper)`**
-Inherits from the BaseWrapper and adds additional methods for conveient API calls.
+Inherits from the BaseWrapper and adds additional methods for convenient API calls.
 
 Methods:
 
